@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Music Player Ultra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #1c1c1c, #0a0a0a);
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .player {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 25px;
+      padding: 40px 30px;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+      text-align: center;
+      width: 350px;
+      color: white;
+      animation: fadeIn 1s ease;
+    }
+
+    .cd {
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 25px;
+      border-radius: 50%;
+      border: 6px solid rgba(255,255,255,0.3);
+      overflow: hidden;
+      animation: spin 12s linear infinite;
+      box-shadow: 0 0 20px cyan;
+    }
+
+    .cd img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .title {
+      font-size: 22px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 10px cyan;
+    }
+
+    .artist {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: cyan;
+      transition: width 0.2s ease;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .toggle-btn {
+      background: rgba(0,255,255,0.1);
+      border: 2px solid cyan;
+      padding: 14px 22px;
+      border-radius: 50%;
+      color: cyan;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(5px);
+      width: 65px;
+      height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-btn:hover {
+      background: cyan;
+      color: black;
+      transform: scale(1.15) rotate(10deg);
+      box-shadow: 0 0 20px cyan;
+    }
+
+    .icon {
+      transition: all 0.3s ease;
+      font-size: 26px;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="player">
+    <div class="cd" id="cd">
+      <img src="https://raw.githubusercontent.com/silentnotes-site/Onda-Perfetta---Guestisback-Music-Player-/refs/heads/main/ondaperfetta.png" alt="Copertina">
+    </div>
+    <div class="title">Onda Perfetta</div>
+    <div class="artist">Guestisback</div>
+    <div class="progress-container">
+      <div class="progress" id="progressBar"></div>
+    </div>
+    <div class="controls">
+      <button class="toggle-btn" onclick="togglePlay()">
+        <span class="icon" id="icon">▶</span>
+      </button>
+    </div>
+    <audio id="audio" src="https://github.com/silentnotes-site/Onda-Perfetta---Guestisback-Music-Player-/raw/refs/heads/main/Onda%20Perfetta.mp3"></audio>
+  </div>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const icon = document.getElementById('icon');
+    const progressBar = document.getElementById('progressBar');
+    const cd = document.getElementById('cd');
+
+    let isPlaying = false;
+
+    function togglePlay() {
+      if (isPlaying) {
+        audio.pause();
+        icon.textContent = '▶';
+        cd.style.animationPlayState = 'paused';
+      } else {
+        audio.play();
+        icon.textContent = '⏸';
+        cd.style.animationPlayState = 'running';
+      }
+      isPlaying = !isPlaying;
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progressBar.style.width = percent + '%';
+    });
+
+    audio.addEventListener('ended', () => {
+      isPlaying = false;
+      icon.textContent = '▶';
+      cd.style.animationPlayState = 'paused';
+    });
+  </script>
+</body>
+</html>
