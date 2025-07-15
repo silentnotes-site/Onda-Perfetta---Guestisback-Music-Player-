@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Music Player Ultra</title>
+  <title>Onda Perfetta - Guestisback</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -30,7 +30,7 @@
       padding: 40px 30px;
       box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
       text-align: center;
-      width: 350px;
+      width: 360px;
       color: white;
       animation: fadeIn 1s ease;
     }
@@ -115,6 +115,55 @@
       font-size: 26px;
     }
 
+    .extra-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .extra-buttons button {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid cyan;
+      color: cyan;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .extra-buttons button:hover {
+      background: cyan;
+      color: black;
+      box-shadow: 0 0 10px cyan;
+    }
+
+    .volume-slider {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    input[type=range] {
+      width: 100%;
+      appearance: none;
+      height: 6px;
+      background: cyan;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      border: 2px solid cyan;
+      cursor: pointer;
+    }
+
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -135,16 +184,28 @@
     <div class="cd" id="cd">
       <img src="https://raw.githubusercontent.com/silentnotes-site/Onda-Perfetta---Guestisback-Music-Player-/refs/heads/main/ondaperfetta.png" alt="Copertina">
     </div>
-    <div class="title">Onda Perfetta</div>
+    <div class="title" id="title">Onda Perfetta</div>
     <div class="artist">Guestisback</div>
     <div class="progress-container">
       <div class="progress" id="progressBar"></div>
     </div>
+
+    <div class="extra-buttons">
+      <button onclick="changeTrack('slowed')">Slowed</button>
+      <button onclick="changeTrack('speed')">Speed Up</button>
+      <button onclick="changeTrack('normal')">Normale</button>
+    </div>
+
     <div class="controls">
       <button class="toggle-btn" onclick="togglePlay()">
         <span class="icon" id="icon">▶</span>
       </button>
     </div>
+
+    <div class="volume-slider">
+      <input type="range" min="0" max="1" step="0.01" value="1" onchange="changeVolume(this.value)">
+    </div>
+
     <audio id="audio" src="https://github.com/silentnotes-site/Onda-Perfetta---Guestisback-Music-Player-/raw/refs/heads/main/Onda%20Perfetta.mp3"></audio>
   </div>
 
@@ -153,8 +214,23 @@
     const icon = document.getElementById('icon');
     const progressBar = document.getElementById('progressBar');
     const cd = document.getElementById('cd');
-
+    const title = document.getElementById('title');
     let isPlaying = false;
+
+    const tracks = {
+      normal: {
+        src: "https://github.com/silentnotes-site/Onda-Perfetta---Guestisback-Music-Player-/raw/refs/heads/main/Onda%20Perfetta.mp3",
+        title: "Onda Perfetta"
+      },
+      speed: {
+        src: "https://s142.convertio.me/p/7K9bM71z3bG4wNevSTglnQ/62f2693d5a37ce96962bd79bd3512bd6/Onda-Perfetta-slowedandreverbstudio.mp3",
+        title: "Onda Perfetta (Speed Up)"
+      },
+      slowed: {
+        src: "https://s186.convertio.me/p/fWNUQHMAcIf1NrnA6zXjMw/62f2693d5a37ce96962bd79bd3512bd6/Onda-Perfetta-_1_-slowedandreverbstudio.mp3",
+        title: "Onda Perfetta (Slowed)"
+      }
+    };
 
     function togglePlay() {
       if (isPlaying) {
@@ -167,6 +243,21 @@
         cd.style.animationPlayState = 'running';
       }
       isPlaying = !isPlaying;
+    }
+
+    function changeTrack(type) {
+      audio.pause();
+      audio.src = tracks[type].src;
+      title.textContent = tracks[type].title;
+      audio.load();
+      audio.play();
+      icon.textContent = '⏸';
+      cd.style.animationPlayState = 'running';
+      isPlaying = true;
+    }
+
+    function changeVolume(value) {
+      audio.volume = value;
     }
 
     audio.addEventListener('timeupdate', () => {
